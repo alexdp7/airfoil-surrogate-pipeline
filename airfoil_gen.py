@@ -72,30 +72,15 @@ def generate_naca(airfoil): # later it needs to loop through a text file to get 
     y_surf[-1] = 0.0  
     return x_surf, y_surf
 
-def rotate_aoa(x_surf, y_surf, aoa_deg):
-    aoa = np.radians(aoa_deg)
-    x_c = 0.25
-    x_rot = x_surf-x_c
-    y_rot = y_surf
-    x_new = x_rot * np.cos(aoa) + y_rot * np.sin(aoa) + x_c
-    y_new = -x_rot * np.sin(aoa) + y_rot * np.cos(aoa)
-    return x_new, y_new
-
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description="NACA 4-Digit 2D Geometry Generator")
     parser.add_argument("--naca", type=str, default='2412')
-    parser.add_argument("--aoa", type=float, default=0.0)
     parser.add_argument("--output", type=str, default=None)
     args = parser.parse_args()
   
     x, y = generate_naca(args.naca)
-    print(x[0], x[-1])
-    x, y = rotate_aoa(x,y,10)
-    print(f"TE start: x={x[0]:.4f}, y={y[0]:.4f}")
-    print(f"LE: x={x[len(x)//2]:.4f}, y={y[len(y)//2]:.4f}")
-    print(f"TE end: x={x[-1]:.4f}, y={y[-1]:.4f}")
-
+    
     if args.output:
         np.savetxt(args.output, np.column_stack([x, y]), delimiter=',', header='x,y', comments='')
     else:
